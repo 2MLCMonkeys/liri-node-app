@@ -23,7 +23,6 @@ for(var i = 3; i < inputSearch.length; i++){
 }
 
 console.log(inputType);
-console.log(inputSearch);
 console.log(searchElement);
 
 
@@ -43,9 +42,13 @@ if (inputType === "do-what-it-says"){
     console.log("run-text");
     randomText();
 }
-// else{
-//     prompt("Not a search parameter");
+// if (inputType !== "movie-this" || inputType !== "do-what-it-says" || inputType !== "concert-this" || inputType !== "spotify-this-song"){
+//     console.log("Please select a search method: spotify-this-song, do-what-it-says, movie-this, concert-this");
 // }
+if (!searchElement){
+    console.log("Please enter a subject to search for");
+
+}
 
 ////////////////////////// AXIOS - BANDS ///////////////////////////
 function concertThis(){
@@ -54,6 +57,7 @@ axios
     .get(queryURLbands)
     .then(function (response) {
         console.log(response.data);
+        //console.log(response.data.venue.name);
     })
 
     .catch(function (error) {
@@ -76,7 +80,13 @@ function movieThis(){
 axios
     .get(queryURLmovie)
     .then(function (response) {
-        console.log(response.data);
+        console.log(response.data.Title);
+        console.log(response.data.Year);
+        console.log(response.data.Actors);
+        console.log(response.data.Plot);
+        console.log(response.data.Language);
+        console.log(response.data.Ratings[0].Value);
+        console.log(response.data.Country);
     })
 
     .catch(function (error) {
