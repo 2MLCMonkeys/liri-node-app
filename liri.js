@@ -46,20 +46,17 @@ function pickSearch() {
         case "do-what-it-says":
             randomText();
             break;
+
+        case 'return-log':
+            returnLog();
+            break;
     };
 };
 pickSearch();
 
-// if (inputType !== "movie-this" || inputType !== "do-what-it-says" || inputType !== "concert-this" || inputType !== "spotify-this-song"){
-//     console.log("Please select a search method: spotify-this-song, do-what-it-says, movie-this, concert-this");
-// }
-if (!searchElement) {
-    console.log("Please enter a subject to search for");
-
-}
-
 ////////////////////////// AXIOS - BANDS ///////////////////////////
 function concertThis() {
+    //returns data
     var queryURLbands = "https://rest.bandsintown.com/artists/" + searchElement + "/events?app_id=codingbootcamp";
     axios
     .get(queryURLbands)
@@ -88,10 +85,12 @@ function concertThis() {
             }
             console.log(error.config);
         })
+        logRequest();
 };
 
 ////////////////////////// AXIOS - OMDB ///////////////////////////
 function movieThis() {
+    //returns data
     var queryURLmovie = "http://www.omdbapi.com/?t=" + searchElement + "&y=&plot=short&apikey=c0ddea2a";
     axios
         .get(queryURLmovie)
@@ -118,10 +117,13 @@ function movieThis() {
             }
             console.log(error.config);
         })
+        logRequest();
+         
 };
 
 //////////////////////// SPOTIFY ////////////////////////////
 function spotifyThis() {
+    //returns data
     spotify.search({ type: 'track', query: searchElement}, function(err, data) {
         if (err) {
           return console.log('Error occurred: ' + err);
@@ -135,7 +137,7 @@ function spotifyThis() {
       console.log("------------------------------");
     };
       });
-
+    logRequest();
 };
 
 
@@ -153,25 +155,37 @@ function randomText() {
         
         inputType = " ";
         searchElement = " ";
-
+        
         inputType = data[0]
         searchElement = data[1]
         console.log("foo: " + inputType);
         console.log("bar: " + searchElement);
         
-        switch (inputType) {
-            case "concert-this":
-                concertThis();
-                break;
-    
-            case "spotify-this-song":
-                spotifyThis();
-                break;
-    
-            case "movie-this":
-                movieThis();
-                break;
-        };
-
+        pickSearch();
     });
 };
+
+ ///////////////////////// LOGS ENTRY ///////////////////////
+ function logRequest(){
+ searchElement = searchElement.replace('+', " ");
+ searchElement = searchElement.replace('"', " ");
+ searchElement = searchElement.replace('"', " ");
+ console.log(searchElement);
+ fs.appendFile("log.txt", inputType + ", " + searchElement + ";\n", function(err){
+     if(err){
+         console.log(err);
+     } else {
+         console.log("Logged: " + inputType, searchElement);
+     }
+ });
+};
+
+////////////////////////////// RETURN LOG ////////////////////////
+function returnLog(){
+    fs.readFile("log.txt", "utf8", function(error, data){
+        if(error){
+            return console.log(error);
+        }
+    
+    console.log(data);
+})};
