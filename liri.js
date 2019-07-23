@@ -4,6 +4,7 @@ var fs = require("fs");
 var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
+var moment = require('moment');
 
 
 var spotify = new Spotify(keys.spotify);
@@ -61,12 +62,18 @@ if (!searchElement) {
 function concertThis() {
     var queryURLbands = "https://rest.bandsintown.com/artists/" + searchElement + "/events?app_id=codingbootcamp";
     axios
-        .get(queryURLbands)
-        .then(function (response) {
-            //console.log(response.data);
-            console.log("Venue Name: " + response.data[0].venue.name);
-            console.log("Venue Location: " + response.data[0].venue.city + ", " + response.data[0].venue.region + ", " + response.data[0].venue.country)
-            console.log("Date of Event: " + response.data[0].datetime);
+    .get(queryURLbands)
+    .then(function (response) {
+        //console.log(response.data);
+        console.log("--------------------------");
+            for(var x = 0; x < response.data.length; x++){
+            console.log("Venue Name: " + response.data[x].venue.name);
+            console.log("Venue Location: " + response.data[x].venue.city + ", " + response.data[x].venue.region + ", " + response.data[x].venue.country)
+            var dateToFormat = response.data[x].datetime;
+            var date = moment(dateToFormat).format("MM/DD/YYYY");
+            console.log("Date of Event: " + date);
+            console.log("-----------------------------------");
+            };
         })
 
         .catch(function (error) {
@@ -115,15 +122,18 @@ function movieThis() {
 
 //////////////////////// SPOTIFY ////////////////////////////
 function spotifyThis() {
-    spotify.search({ type: 'track', query: searchElement, limit: 1 }, function(err, data) {
+    spotify.search({ type: 'track', query: searchElement}, function(err, data) {
         if (err) {
           return console.log('Error occurred: ' + err);
         }
-
-      console.log("Artist: " + data.tracks.items[0].artists[0].name); 
-      console.log("Name of Song: " + data.tracks.items[0].name); 
-      console.log("Album Name: " + data.tracks.items[0].album.name); 
-      console.log("Spotify Link: " + data.tracks.items[0].external_urls.spotify); 
+        console.log("--------------------------");
+    for(var j = 0; j < data.tracks.items.length; j++){
+      console.log("Artist: " + data.tracks.items[j].artists[0].name); 
+      console.log("Name of Song: " + data.tracks.items[j].name); 
+      console.log("Album Name: " + data.tracks.items[j].album.name); 
+      console.log("Spotify Link: " + data.tracks.items[j].external_urls.spotify); 
+      console.log("------------------------------");
+    };
       });
 
 };
@@ -135,24 +145,33 @@ function randomText() {
         if (err) {
             return console.log(err);
         }
-
-
-
-        data = JSON.stringify(data);
-        data = data.split(",")
+        console.log(data);
+        data = data.split(",");
         console.log(data);
         console.log(data[0]);
         console.log(data[1]);
+        
+        inputType = " ";
+        searchElement = " ";
 
-
-        inputType = data[0].replace('"', "\n");
-        inputSearch = data[1].replace('"', "\n");
-
-
-        console.log(inputType);
-        console.log("foo");
-        console.log(inputSearch);
-        spotifyThis();
+        inputType = data[0]
+        searchElement = data[1]
+        console.log("foo: " + inputType);
+        console.log("bar: " + searchElement);
+        
+        switch (inputType) {
+            case "concert-this":
+                concertThis();
+                break;
+    
+            case "spotify-this-song":
+                spotifyThis();
+                break;
+    
+            case "movie-this":
+                movieThis();
+                break;
+        };
 
     });
 };
