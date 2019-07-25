@@ -37,4 +37,10 @@ spotify-this-song, "I Want it That Way"
 spotify-this-song, Still Counting
 concert-this, The Chainsmokers
 movie-this, Clash of The Titans
+spotify-this-song, You Are The Reason
+spotify-this-song, Light A Way
+concert-this, Volbeat
+movie-this, How To Train Your Dragon
 spotify-this-song, "I Want it That Way"
+movie-this, Robin Hood
+concert-this, red hot chili peppers

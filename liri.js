@@ -6,9 +6,12 @@ var Spotify = require('node-spotify-api');
 var axios = require('axios');
 var moment = require('moment');
 var inquirer = require('inquirer');
+var colors = require('colors/safe')
 
 
 var spotify = new Spotify(keys.spotify);
+var omdb = (keys.omdb.key);
+var bands = (keys.bands.id);
 var logType = " ";
 var searchElement = " ";
 
@@ -23,7 +26,6 @@ function inputLine() {
         let input = result.input.split(" "); // This puts the input into an array
         let command = input[0].toLowerCase(); // This is the command that is recognized by the IF hydra below
         var searchElement = input.slice(1).join(" "); // These are the terms that you can use to search with your functions. They are everything after the command
-        console.log("command " + searchElement);
 
         if (command === "spotify-this-song" || command === "spotify" || command === "s") {
             spotifyThis(searchElement); // Be sure to call the "inputLine()" function at the end of this function
@@ -60,23 +62,23 @@ function concertThis(searchElement) {
     console.log("function: " + searchElement);
     //displays user inputs//
     logType = "concert-this";
-    console.log("Type of Inquiry: " + logType);
-    console.log("Searching For: " + searchElement);
+    console.log(colors.magenta("Type of Inquiry: " + logType));
+    console.log(colors.magenta("Searching For: " + searchElement));
     //sends request
-    var queryURLbands = "https://rest.bandsintown.com/artists/" + searchElement + "/events?app_id=codingbootcamp";
+    var queryURLbands = "https://rest.bandsintown.com/artists/" + searchElement + "/events?app_id=" + bands;
     axios
         .get(queryURLbands)
         .then(function (response) {
             //returns data//
-            console.log("--------------------------");
+            console.log(colors.blue("-----------------------------------"));
             //loops through returned objects and displays data//
             for (var x = 0; x < 5; x++) {
-                console.log("Venue Name: " + response.data[x].venue.name);
-                console.log("Venue Location: " + response.data[x].venue.city + ", " + response.data[x].venue.region + ", " + response.data[x].venue.country)
+                console.log(colors.cyan("Venue Name: ") + response.data[x].venue.name);
+                console.log(colors.cyan("Venue Location: ") + response.data[x].venue.city + ", " + response.data[x].venue.region + ", " + response.data[x].venue.country)
                 var dateToFormat = response.data[x].datetime;
                 var date = moment(dateToFormat).format("MM/DD/YYYY");
-                console.log("Date of Event: " + date);
-                console.log("-----------------------------------");
+                console.log(colors.cyan("Date of Event: ") + date);
+                console.log(colors.blue("-----------------------------------"));
             };
             //logs user input in separate file//
             logRequest(logType, searchElement);
@@ -100,24 +102,24 @@ function concertThis(searchElement) {
 function movieThis(searchElement) {
     //displays user inputs//
     logType = "movie-this";
-    console.log("Type of Inquiry: " + logType);
-    console.log("Searching For: " + searchElement);
+    console.log(colors.magenta("Type of Inquiry: " + logType));
+    console.log(colors.magenta("Searching For: " + searchElement));
     //sends request for user
-    var queryURLmovie = "http://www.omdbapi.com/?t=" + searchElement + "&y=&plot=short&apikey=c0ddea2a";
+    var queryURLmovie = "http://www.omdbapi.com/?t=" + searchElement + "&y=&plot=short&apikey=" + omdb;
     axios
     .get(queryURLmovie)
     .then(function (response) {
         //displays returned data//
-        console.log("-----------------------------------");
-        console.log("Movie Title: " + response.data.Title);
-        console.log("Release Year: " + response.data.Year);
-        console.log("Actors: " + response.data.Actors);
-        console.log("Plot: " + response.data.Plot);
-        console.log("Language: " + response.data.Language);
-        console.log("IMDB Rating: " + response.data.Ratings[0].Value);
-        console.log("Rotteh Tomatoes Rating: " + response.data.Ratings[1].Value);
-        console.log("Country: " + response.data.Country);
-        console.log("-----------------------------------");
+        console.log(colors.blue("-----------------------------------"));
+        console.log(colors.cyan("Movie Title: " )+ response.data.Title);
+        console.log(colors.cyan("Release Year: ") + response.data.Year);
+        console.log(colors.cyan("Actors: ") + response.data.Actors);
+        console.log(colors.cyan("Plot: ") + response.data.Plot);
+        console.log(colors.cyan("Language: ") + response.data.Language);
+        console.log(colors.cyan("IMDB Rating: ") + response.data.Ratings[0].Value);
+        console.log(colors.cyan("Rotteh Tomatoes Rating: ") + response.data.Ratings[1].Value);
+        console.log(colors.cyan("Country: ") + response.data.Country);
+        console.log(colors.blue("-----------------------------------"));
         //logs user input in separate file//
             logRequest(logType, searchElement);
         })
@@ -141,8 +143,8 @@ function movieThis(searchElement) {
 function spotifyThis(searchElement) {
     //displays user inputs//
     logType = "spotify-this-song";
-    console.log("Type of Inquiry: " + logType);
-    console.log("Searching For: " + searchElement);
+    console.log(colors.magenta("Type of Inquiry: " + logType));
+    console.log(colors.magenta("Searching For: " + searchElement));
     //sends request from user input//
     spotify.search({ type: 'track', query: searchElement, limit: 5 }, function (err, data) {
         //catches error if any and displays//
@@ -150,13 +152,13 @@ function spotifyThis(searchElement) {
             return console.log('Error occurred: ' + err);
         }
         //displays returned data and loops through the entire returned results//
-        console.log("--------------------------");
+        console.log(colors.blue("-----------------------------------"));
         for (var j = 0; j < data.tracks.items.length; j++) {
-            console.log("Artist: " + data.tracks.items[j].artists[0].name);
-            console.log("Name of Song: " + data.tracks.items[j].name);
-            console.log("Album Name: " + data.tracks.items[j].album.name);
-            console.log("Spotify Link: " + data.tracks.items[j].external_urls.spotify);
-            console.log("------------------------------");
+            console.log(colors.cyan("Artist: " )+ data.tracks.items[j].artists[0].name);
+            console.log(colors.cyan("Name of Song: ") + data.tracks.items[j].name);
+            console.log(colors.cyan("Album Name: ") + data.tracks.items[j].album.name);
+            console.log(colors.cyan("Spotify Link: ") + data.tracks.items[j].external_urls.spotify);
+            console.log(colors.blue("-----------------------------------"));
         };
         //logs user input in separate file//
         logRequest(logType, searchElement);
