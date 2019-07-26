@@ -4,7 +4,7 @@
 (Video of Working Application)
 
 ## Description
-Liri application is a program run through command line incorperating Node.js. Liri takes in set parameters and returns data about the input. Every researched input is logged in a file. 
+Liri application is a program run through command line incorperating Node.js. Liri takes in set parameters and returns data about the input. Every researched input is logged in a file. Runs in command terminal, will need your own keys to use on local device in a dotenv file. On run will prompt for a command, every word after command is the search parameters for the API requests sent out. Commands will cycle through and pick correct function to follow. Returned information will then be displayed on command line. Continues through prompt until exit is intialized. 
 
 ### Modules
 - node-spotify-api
